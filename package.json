@@ -1,0 +1,25 @@
+{
+  "name": "taman-fatahillah-panduan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.1",
+  "engines": {
+    "node": ">=22.13.0 <23",
+    "pnpm": "10.15.1"
+  },
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0 --port 3000",
+    "check": "astro check",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/check": "0.9.10",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.2.2",
+    "typescript": "5.9.3",
+    "wrangler": "4.123.0"
+  }
+}

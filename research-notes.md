@@ -1,0 +1,7 @@
+# Catatan sumber — Taman Fatahillah
+
+- [Indonesia Travel](https://www.indonesia.travel/id/id/travel-ideas/heritage/explore-jakarta-kota-tua-today-s-old-batavia) menjelaskan Taman Fatahillah sebagai bekas Stadhuisplein, ruang publik di depan bekas Balai Kota Batavia; akses lapangan dicantumkan 24 jam dan tanpa tiket. Sumber yang sama membedakan Museum Sejarah Jakarta sebagai kunjungan dalam ruang bertiket dengan jam Selasa–Jumat 09.00–15.00 WIB, Sabtu–Minggu 09.00–20.00 WIB, dan tutup Senin.
+- Foto utama bersumber dari Wikimedia Commons: *Jakarta Indonesia Jakarta-History-Museum-01.jpg*, karya CEphoto, Uwe Aranas; halaman sumber mencantumkan kewajiban kredit. Foto pendukung berasal dari halaman berjudul *Batavia City Hall (Jakarta History Museum) Fatahillah Square (2025) - img 17.jpg*.
+- Referensi visual `http://kerisjambi.com/` dianalisis hanya untuk ritme editorial, navigasi satu halaman, dan nada panduan independen; konten, identitas, serta susunan situs ini dikembangkan khusus untuk Taman Fatahillah.
+- Pratinjau terkelola diverifikasi setelah mengizinkan host pratinjau pada konfigurasi Vite milik Astro. Hero memuat foto lapangan dan museum yang nyata, cap navigasi `KOTA TUA · JAKARTA`, serta tata letak responsif.
+- Validasi produksi berhasil dengan `pnpm check`, `pnpm build`, pemindaian placeholder, dan `wrangler deploy --dry-run`; mode Worker Static Assets membaca lima berkas dari `dist` tanpa binding.
