@@ -1,0 +1,12 @@
+{
+  "name": "Taman Fatahillah — Panduan Kota Tua Jakarta",
+  "short_name": "Fatahillah",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "16x16", "type": "image/svg+xml" },
+    { "src": "/favicon.svg", "sizes": "32x32", "type": "image/svg+xml" },
+    { "src": "/favicon.svg", "sizes": "180x180", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#103C35",
+  "background_color": "#F5EEDC",
+  "display": "browser"
+}

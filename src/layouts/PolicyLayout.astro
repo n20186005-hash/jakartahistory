@@ -1,0 +1,43 @@
+---
+// Batu & Sepeda — policy subpages preserve the independent field-guide identity while prioritising calm, readable legal information.
+import "../styles/global.css";
+import "../styles/refinement.css";
+import "../styles/bilingual.css";
+import "../styles/policy.css";
+
+interface Props {
+  lang: "id" | "en";
+  title: string;
+  eyebrow: string;
+  summary: string;
+  alternateHref: string;
+  alternateLabel: string;
+  homeHref: string;
+  homeLabel: string;
+  privacyHref: string;
+  privacyLabel: string;
+  termsHref: string;
+  termsLabel: string;
+  cookieHref: string;
+  cookieLabel: string;
+}
+
+const props = Astro.props as Props;
+---
+<!doctype html>
+<html lang={props.lang}>
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={props.summary} /><meta name="theme-color" content="#103C35" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{props.title} — Fatahillah Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  </head>
+  <body class="policy-body">
+    <a class="skip-link" href="#content">{props.lang === "id" ? "Lewati ke isi utama" : "Skip to main content"}</a>
+    <header class="policy-header"><a class="brand" href={props.homeHref}><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 43h40M19 40l8-15h10l8 15M23 43a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm18 0a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 25 22 17h9l6 8" fill="none" stroke="#B7472A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>{props.lang === "id" ? "Taman Fatahillah" : "Fatahillah"}</strong><small>{props.lang === "id" ? "Panduan Kota Tua" : "Kota Tua Guide"}</small></span></a><div class="header-actions"><a class="language-switch" href={props.alternateHref}>{props.alternateLabel}</a><a class="policy-back" href={props.homeHref}>← {props.homeLabel}</a></div></header>
+    <main id="content" class="policy-main"><div class="policy-route"></div><section class="policy-hero"><p class="eyebrow">{props.eyebrow}</p><h1>{props.title}</h1><p>{props.summary}</p></section><article class="policy-copy"><slot /></article></main>
+    <footer class="site-footer policy-footer"><div class="footer-top"><div><a class="brand" href={props.homeHref}><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 43h40M19 40l8-15h10l8 15M23 43a6 6 0 1 1 0 12 6 6 0 0 1 0-12Zm18 0a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>{props.lang === "id" ? "Taman Fatahillah" : "Fatahillah"}</strong><small>{props.lang === "id" ? "Panduan Kota Tua" : "Kota Tua Guide"}</small></span></a></div><p>{props.lang === "id" ? "Proyek panduan pengunjung independen dan nirlaba; tidak berafiliasi dengan pengelola atau lembaga resmi mana pun." : "An independent, non-profit visitor-information project; not affiliated with venue operators or official organisations."}</p></div><div class="footer-bottom"><span>© 2026 Fatahillah Visitor Guide.</span><div><a href={props.privacyHref}>{props.privacyLabel}</a><a href={props.termsHref}>{props.termsLabel}</a><a href={props.cookieHref}>{props.cookieLabel}</a></div></div></footer>
+  </body>
+</html>
