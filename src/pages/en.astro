@@ -5,16 +5,88 @@ import "../styles/bilingual.css";
 
 const squareImage = "https://commons.wikimedia.org/wiki/Special:FilePath/Batavia%20City%20Hall%20%28Jakarta%20History%20Museum%29%20Fatahillah%20Square%20%282025%29%20-%20img%2017.jpg?width=1200";
 const museumImage = "https://commons.wikimedia.org/wiki/Special:FilePath/Jakarta%20Indonesia%20Jakarta-History-Museum-01.jpg?width=1600";
+
+const site = Astro.site?.toString().replace(/\/$/, "") || "";
+const absolute = (path: string) => (site && !/^https?:\/\//i.test(path) ? `${site}${path}` : path);
+const canonical = absolute("/en/");
+const siteName = "Taman Fatahillah & Jakarta History Museum, Kota Tua Jakarta — Travel Guide";
+
+const attractionSchema = {
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  name: "Taman Fatahillah",
+  alternateName: "Fatahillah Square",
+  description: "A public heritage square in the heart of Kota Tua Jakarta, fronting the former Batavia City Hall (Jakarta History Museum).",
+  url: canonical,
+  image: squareImage,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jl. Lada Dalam No.7, RT.7/RW.7, Pinangsia",
+    addressLocality: "Kota Jakarta Barat",
+    addressRegion: "Daerah Khusus Ibukota Jakarta",
+    postalCode: "11110",
+    addressCountry: "ID"
+  },
+  geo: { "@type": "GeoCoordinates", latitude: -6.134920560150956, longitude: 106.81070202690715 },
+  openingHours: "Mo-Su 00:00-23:59",
+  isAccessibleForFree: true,
+  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.6", reviewCount: "29928", bestRating: "5" }
+};
+
+const museumSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Jakarta History Museum",
+  alternateName: "Museum Sejarah Jakarta",
+  url: canonical,
+  image: museumImage,
+  address: attractionSchema.address,
+  geo: { "@type": "GeoCoordinates", latitude: -6.135177460153231, longitude: 106.81077487690717 },
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "15:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday", "Sunday"], opens: "09:00", closes: "20:00" }
+  ],
+  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.6", reviewCount: "22874", bestRating: "5" }
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    { "@type": "Question", name: "Is Taman Fatahillah free to enter?", acceptedAnswer: { "@type": "Answer", text: "Taman Fatahillah is designated a public open space by DKI Jakarta Governor Decree No. 127/1972 on the Kota Tua Cultural Heritage Precinct and is generally accessible without an entry ticket. Temporary sponsored events, such as the annual Jakarnaval festival, may apply separate registration or ticketing." } },
+    { "@type": "Question", name: "Does Jakarta History Museum require a ticket?", acceptedAnswer: { "@type": "Answer", text: "Yes. The museum is managed by the DKI Jakarta Culture Office and applies ticket tariffs under Governor Regulation No. 113/2022. 2024 structure: Rp15,000 for adult Indonesian citizens, Rp5,000 for students (with ID), and Rp50,000 for foreign visitors. Children aged 6 and under and seniors aged 60 or older are exempt." } },
+    { "@type": "Question", name: "When are the most comfortable visiting times?", acceptedAnswer: { "@type": "Answer", text: "Climatologically, the morning window 07:30–10:00 WIB offers the most comfortable outdoor walking, with temperatures of 26–29°C. For the museum, arrive within the first 30 minutes of opening to avoid school-group queues after 10:30. Late afternoon 16:00–18:00 WIB gives the best light for photographing the Dutch Classicism facade." } },
+    { "@type": "Question", name: "Is the area free from flood risk?", acceptedAnswer: { "@type": "Answer", text: "Kota Tua Jakarta sits at a mean elevation of 2.8 metres above sea level. During the west monsoon (November–February), especially at spring tide, sea level can reach +1.4 m and cause inundation in the northern precinct, which may temporarily suspend access to the museum's underground prison cells. Prefer visiting outside the monsoon season when rainfall is forecast above 50 mm/day." } },
+    { "@type": "Question", name: "Are parking, toilets and food options available?", acceptedAnswer: { "@type": "Answer", text: "Public parking is available at the Kota Intan Park-and-Ride precinct (about 600 bays, 350 m west) and Pasar Ikan Parking (about 350 bays, 500 m north). Public toilets and lactation rooms compliant with SNI 03-7013-2004 are available in the museum building and at Jl. Pintu Besar Utara No. 14. Betawi food stalls and mid-range cafes along Jl. Kali Besar Timur generally open from 08:00 WIB." } },
+    { "@type": "Question", name: "Are there photography restrictions inside the museum?", acceptedAnswer: { "@type": "Answer", text: "Personal photography (phone or DSLR, no flash, no tripod) is permitted in all permanent galleries. Video recording requires written permission from the DKI Jakarta Culture Office at least 7 days in advance. Flash, tripods and stabilisers are prohibited in the Raden Saleh painting gallery (Level 2) to prevent photodegradation of the oil pigments." } }
+  ]
+};
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="An independent, bilingual visitor guide to Taman Fatahillah and Jakarta History Museum in Kota Tua Jakarta." />
+    <meta name="description" content="Plan your visit to Taman Fatahillah and Jakarta History Museum in Kota Tua, Jakarta. Opening hours, ticket prices (Rp15k Indonesians / Rp50k foreign), history, maps and how to get there." />
     <meta name="theme-color" content="#103C35" /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>Taman Fatahillah & Jakarta History Museum — Kota Tua Guide</title>
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    {site && <link rel="canonical" href={canonical} />}
+    {site && <link rel="alternate" hreflang="id" href={absolute("/")} />}
+    {site && <link rel="alternate" hreflang="en" href={absolute("/en/")} />}
+    {site && <link rel="alternate" hreflang="x-default" href={absolute("/en/")} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={siteName} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:description" content="Plan your visit to Taman Fatahillah and Jakarta History Museum in Kota Tua, Jakarta. Opening hours, ticket prices, history, maps and how to get there." />
+    <meta property="og:image" content={museumImage} />
+    {site && <meta property="og:url" content={canonical} />}
+    <title>{siteName}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(attractionSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(museumSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to main content</a>

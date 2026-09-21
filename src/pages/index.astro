@@ -5,8 +5,9 @@ import "../styles/refinement.css";
 import "../styles/bilingual.css";
 
 const site = Astro.site?.toString().replace(/\/$/, "") || "";
-const absolute = (path: string) => (site ? `${site}${path}` : path);
+const absolute = (path: string) => (site && !/^https?:\/\//i.test(path) ? `${site}${path}` : path);
 const canonical = absolute("/");
+const siteName = "Taman Fatahillah & Museum Sejarah Jakarta — Panduan Wisata Kota Tua Jakarta";
 const heroImage = "https://commons.wikimedia.org/wiki/Special:FilePath/Jakarta%20Indonesia%20Jakarta-History-Museum-01.jpg?width=1600";
 const squareImage = "https://commons.wikimedia.org/wiki/Special:FilePath/Batavia%20City%20Hall%20%28Jakarta%20History%20Museum%29%20Fatahillah%20Square%20%282025%29%20-%20img%2017.jpg?width=1200";
 
@@ -68,13 +69,17 @@ const faqSchema = {
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
     {site && <link rel="canonical" href={canonical} />}
+    {site && <link rel="alternate" hreflang="id" href={absolute("/")} />}
+    {site && <link rel="alternate" hreflang="en" href={absolute("/en/")} />}
+    {site && <link rel="alternate" hreflang="x-default" href={absolute("/en/")} />}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="id_ID" />
-    <meta property="og:title" content="Taman Fatahillah — Panduan Kota Tua Jakarta" />
+    <meta property="og:title" content={siteName} />
+    <meta property="og:site_name" content={siteName} />
     <meta property="og:description" content="Panduan independen untuk membaca suasana, akses, dan kunjungan ke Taman Fatahillah." />
     <meta property="og:image" content={absolute(heroImage)} />
     {site && <meta property="og:url" content={canonical} />}
-    <title>Taman Fatahillah — Panduan Kota Tua Jakarta</title>
+    <title>{siteName}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
