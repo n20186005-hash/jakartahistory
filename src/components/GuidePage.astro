@@ -3,6 +3,7 @@ import "../styles/global.css";
 import "../styles/refinement.css";
 import "../styles/bilingual.css";
 import {copy, sources} from "../data/guide";
+import {TOPICS, TOPIC_GROUPS} from "../data/topics";
 interface Props {lang: "id" | "en"}
 const {lang}=Astro.props;
 const c=copy[lang]; const en=lang==='en';
@@ -14,6 +15,8 @@ const ids=['museum','hours','tickets','history','access','maps','faq'];
 const museumSchema={"@context":"https://schema.org","@type":"Museum",name:"Museum Sejarah Jakarta",alternateName:["Jakarta History Museum","Museum Fatahillah"],url:absolute(home),description:c.description,image:absolute(museumImage),hasMap:sources.maps,address:{"@type":"PostalAddress",streetAddress:"Taman Fatahillah No. 1, Pinangsia, Taman Sari",addressLocality:"Jakarta Barat",addressRegion:"DKI Jakarta",postalCode:"11110",addressCountry:"ID"},geo:{"@type":"GeoCoordinates",latitude:-6.1351828,longitude:106.8133498}};
 const faqSchema={"@context":"https://schema.org","@type":"FAQPage",mainEntity:c.faq.map(f=>({"@type":"Question",name:f.q,acceptedAnswer:{"@type":"Answer",text:f.a}}))};
 const sourceUrls=[sources.registry,sources.culture,sources.opening,sources.older,sources.maps];
+const stripHtml=(s:string)=>s.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+const guideLinks=TOPIC_GROUPS.map((g)=>({label:en?g.enLabel:g.idLabel,items:TOPICS.filter((t)=>t.group===g.id).map((t)=>{const href=en?`/en/${t.en.slug}/`:`/${t.id.slug}/`;return {href,linkText:stripHtml(t[lang].h1),title:t[lang].title};})}));
 ---
 <!doctype html><html lang={lang}><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -35,5 +38,6 @@ const sourceUrls=[sources.registry,sources.culture,sources.opening,sources.older
 <section id="maps" class="section map-section"><div class="route-number light">06 / {c.nav[5]}</div><div class="map-heading"><div><h2>Museum Sejarah Jakarta</h2><p>{c.address}</p><p>{c.snapshot}</p></div><a class="button coral" href={sources.maps} target="_blank" rel="noreferrer">{c.map} ↗</a></div><div class="map-frame"><iframe src="https://maps.google.com/maps?q=-6.1351828,106.8133498&z=17&output=embed" title={en?'Jakarta History Museum location':'Lokasi Museum Sejarah Jakarta'} width="600" height="450" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></section>
 <section id="faq" class="section faq-section"><div class="route-number">07 / FAQ</div><div class="faq-heading"><h2 set:html={c.faqTitle}/></div><div class="faq-list">{c.faq.map(f=><details><summary>{f.q}<span>+</span></summary><p>{f.a}</p></details>)}</div></section>
 <section class="section transparency-section"><div class="route-number light">08 / {en?'SOURCES':'SUMBER'}</div><div class="transparency-layout"><div><h2 set:html={c.sourcesTitle}/><p>{c.sourceNote}</p></div><ul>{sourceUrls.map((url,i)=><li><a href={url}>{c.labels[i]} ↗</a></li>)}<li><a href="https://commons.wikimedia.org/wiki/File:Jakarta_Indonesia_Jakarta-History-Museum-01.jpg">{en?'Museum photo':'Foto museum'} · CEphoto, Uwe Aranas · CC BY-SA 3.0 ↗</a></li><li><a href="https://commons.wikimedia.org/wiki/File:Batavia_City_Hall_(Jakarta_History_Museum)_Fatahillah_Square_(2025)_-_img_17.jpg">{en?'Square photo':'Foto lapangan'} · Chainwit. · CC BY 4.0 ↗</a></li></ul></div></section>
+<section class="section guides-section"><div class="route-number light">{en ? "GUIDES" : "PANDUAN"}</div><div class="guides-wrap">{guideLinks.map((g) => (<div class="guide-group"><h3>{g.label}</h3><ul>{g.items.map((it) => <li><a href={it.href} title={it.title}>{it.linkText}</a></li>)}</ul></div>))}</div></section>
 </main><footer class="site-footer"><div class="footer-top"><div class="brand"><strong>Museum Sejarah Jakarta</strong></div><p>{c.independent}</p></div><div class="footer-bottom"><span>© 2026 Jakarta History Visitor Guide</span><div><a href={`${home}privacy/`}>{c.legal[0]}</a><a href={`${home}terms/`}>{c.legal[1]}</a><a href={`${home}cookie-settings/`}>{c.legal[2]}</a></div></div></footer>
 </body></html>

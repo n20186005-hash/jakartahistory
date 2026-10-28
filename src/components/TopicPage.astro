@@ -1,0 +1,112 @@
+---
+import "../styles/global.css";
+import "../styles/refinement.css";
+import "../styles/bilingual.css";
+import "../styles/topics.css";
+import { getTopic, TOPICS, TOPIC_GROUPS } from "../data/topics";
+
+interface Props {
+  key: string;
+  lang: "id" | "en";
+}
+const { key, lang } = Astro.props;
+const en = lang === "en";
+const topic = TOPICS.find((t) => t.key === key)!;
+const content = topic[lang];
+const idContent = topic.id;
+const enContent = topic.en;
+const origin = Astro.site || new URL("https://jakartahistory.com");
+const absolute = (path: string) => new URL(path, origin).href;
+
+const idUrl = absolute(`/${idContent.slug}/`);
+const enUrl = absolute(`/en/${enContent.slug}/`);
+const canonical = en ? enUrl : idUrl;
+const alternate = en ? idUrl : enUrl;
+const homeUrl = en ? "/en/" : "/";
+const switchUrl = en ? idUrl : enUrl;
+const switchLabel = en ? "ID" : "EN";
+
+const groupDef = TOPIC_GROUPS.find((g) => g.id === topic.group);
+const groupLabel = groupDef ? (en ? groupDef.enLabel : groupDef.idLabel) : "";
+const crumbName = en ? "Home" : "Beranda";
+
+// JSON-LD: a third-party Article about the topic (never marked as the museum operator).
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "@id": canonical + "#article",
+  headline: content.title,
+  description: content.description,
+  inLanguage: en ? "en" : "id",
+  dateModified: content.updated,
+  publisher: {
+    "@type": "Organization",
+    name: en ? "Jakarta History Visitor Guide" : "Panduan Pengunjung Sejarah Jakarta",
+  },
+};
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: crumbName,
+      item: absolute(homeUrl),
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: groupLabel,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: content.title,
+      item: canonical,
+    },
+  ],
+};
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: content.faq.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+---
+<!doctype html><html lang={lang}><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{content.title}</title><meta name="description" content={content.description}/><meta name="theme-color" content="#103C35"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="manifest" href="/site.webmanifest"/>
+<link rel="canonical" href={canonical}/><link rel="alternate" hreflang="id" href={idUrl}/><link rel="alternate" hreflang="en" href={enUrl}/><link rel="alternate" hreflang="x-default" href={idUrl}/>
+<meta property="og:type" content="article"/><meta property="og:title" content={content.title}/><meta property="og:description" content={content.description}/><meta property="og:url" content={canonical}/><meta property="og:image" content={absolute("/images/jakarta-history-museum.jpg")}/><meta property="og:locale" content={en ? "en_US" : "id_ID"}/>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)}/><script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}/><script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)}/>
+</head><body>
+<a class="skip-link" href="#content">{en ? "Skip to main content" : "Lewati ke isi utama"}</a>
+<header class="site-header"><a class="brand" href={homeUrl}><span><strong>{en ? "Jakarta History Museum" : "Museum Sejarah Jakarta"}</strong><small>{en ? "Independent Kota Tua guide" : "Panduan independen Kota Tua"}</small></span></a><nav aria-label={en ? "Primary" : "Utama"}><a href={homeUrl}>{en ? "Guide" : "Panduan"}</a></nav><div class="header-actions"><a class="language-switch" href={switchUrl} lang={en ? "id" : "en"}>{switchLabel}</a></div></header>
+<main id="content">
+<article class="topic-article">
+<nav class="breadcrumb" aria-label={en ? "Breadcrumb" : "Roti"}><a href={homeUrl}>{crumbName}</a><span aria-hidden="true"> › </span><span>{groupLabel}</span><span aria-hidden="true"> › </span><span>{content.title}</span></nav>
+<section class="hero topic-hero"><div class="hero-content"><p class="eyebrow light">{groupLabel}</p><h1 set:html={content.h1}/><p class="hero-lede">{content.lead}</p></div></section>
+{content.sections.map((s) => (
+  <section class="section topic-section"><div class="intro-layout"><h2>{s.heading}</h2><div class="copy-block">{s.body.map((p) => <p>{p}</p>)}{s.note && <p class="topic-note">{s.note}</p>}</div></div></section>
+))}
+<section class="section faq-section"><div class="route-number">FAQ</div><div class="faq-heading"><h2>{en ? "Before you go" : "Sebelum berangkat"}</h2></div><div class="faq-list">{content.faq.map((f) => <details><summary>{f.q}<span>+</span></summary><p>{f.a}</p></details>)}</div></section>
+<section class="section transparency-section"><div class="route-number light">{en ? "SOURCES" : "SUMBER"}</div><div class="transparency-layout"><div><h2>{en ? "Sources & check date" : "Sumber & tanggal pemeriksaan"}</h2><p>{en ? `Last updated ${content.updated}. Information checked ${content.checked}. Operational details follow the venue; this guide does not guarantee them.` : `Terakhir diperbarui ${content.updated}. Informasi diperiksa ${content.checked}. Detail operasional mengikuti pengelola; panduan ini tidak menjaminnya.`}</p></div><ul>{content.sources.map((s) => <li><a href={s.url}>{s.label} ↗</a></li>)}</ul></div></section>
+</article>
+<section class="section related-section">
+<div class="related-heading"><h2>{en ? "Related guides" : "Panduan terkait"}</h2></div>
+<div class="related-grid">
+{topic.related.map((rk) => {
+  const rel = getTopic(rk, lang);
+  if (!rel) return null;
+  const href = lang === "en" ? `/en/${rel.slug}/` : `/${rel.slug}/`;
+  return <a class="related-card" href={href}><strong set:html={rel.h1}></strong><span>{rel.lead}</span></a>;
+})}
+</div>
+</section>
+</main><footer class="site-footer"><div class="footer-top"><div class="brand"><strong>{en ? "Jakarta History Museum" : "Museum Sejarah Jakarta"}</strong></div><p>{en ? "An independent visitor guide; not affiliated with the museum, government or area operators." : "Panduan pengunjung independen; tidak berafiliasi dengan museum, pemerintah atau operator kawasan."}</p></div><div class="footer-bottom"><span>© 2026 Jakarta History Visitor Guide</span><div><a href={`${homeUrl}privacy/`}>{en ? "Privacy Policy" : "Kebijakan Privasi"}</a><a href={`${homeUrl}terms/`}>{en ? "Terms" : "Syarat Layanan"}</a><a href={`${homeUrl}cookie-settings/`}>{en ? "Cookie Settings" : "Pengaturan Cookie"}</a></div></div></footer>
+</body></html>
